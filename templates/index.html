@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeons & Dragons - Interactive Adventure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Title Screen -->
+        <div id="title-screen" class="screen active">
+            <div class="title-content">
+                <div class="dragon-emblem">🐉</div>
+                <h1 class="game-title">Dungeons & Dragons</h1>
+                <h2 class="subtitle">Interactive Adventure</h2>
+                <p class="edition">5th Edition Rules</p>
+                <button class="btn-primary btn-glow" onclick="startGame()">
+                    <span class="btn-text">Begin Your Quest</span>
+                </button>
+                <div class="scroll-hint">A tale of heroes, monsters, and fate...</div>
+            </div>
+            <div class="floating-dice">
+                <span class="dice d20">⚀</span>
+                <span class="dice d12">⚁</span>
+                <span class="dice d8">⚂</span>
+                <span class="dice d6">⚃</span>
+            </div>
+        </div>
+
+        <!-- Character Creation Screen -->
+        <div id="character-screen" class="screen">
+            <div class="parchment">
+                <h2 class="section-title">Create Your Hero</h2>
+
+                <div class="form-group">
+                    <label for="char-name">Character Name</label>
+                    <input type="text" id="char-name" placeholder="Enter your hero's name..." maxlength="30">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Choose Your Race</label>
+                        <div id="race-selection" class="selection-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Choose Your Class</label>
+                        <div id="class-selection" class="selection-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Ability Scores</h3>
+                    <p class="stats-info">Roll 4d6, drop the lowest die</p>
+                    <button class="btn-secondary" onclick="rollAllStats()">
+                        🎲 Roll Stats
+                    </button>
+                    <div id="stats-display" class="stats-grid">
+                        <div class="stat-box" data-stat="str">
+                            <span class="stat-name">STR</span>
+                            <span class="stat-value">-</span>
+                            <span class="stat-mod"></span>
+                        </div>
+                        <div class="stat-box" data-stat="dex">
+                            <span class="stat-name">DEX</span>
+                            <span class="stat-value">-</span>
+                            <span class="stat-mod"></span>
+                        </div>
+                        <div class="stat-box" data-stat="con">
+                            <span class="stat-name">CON</span>
+                            <span class="stat-value">-</span>
+                            <span class="stat-mod"></span>
+                        </div>
+                        <div class="stat-box" data-stat="int">
+                            <span class="stat-name">INT</span>
+                            <span class="stat-value">-</span>
+                            <span class="stat-mod"></span>
+                        </div>
+                        <div class="stat-box" data-stat="wis">
+                            <span class="stat-name">WIS</span>
+                            <span class="stat-value">-</span>
+                            <span class="stat-mod"></span>
+                        </div>
+                        <div class="stat-box" data-stat="cha">
+                            <span class="stat-name">CHA</span>
+                            <span class="stat-value">-</span>
+                            <span class="stat-mod"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="selection-info" class="selection-info">
+                    <p>Select a race and class to see details...</p>
+                </div>
+
+                <button class="btn-primary" onclick="createCharacter()" id="create-btn" disabled>
+                    Create Character
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-layout">
+                <!-- Left Panel - Character Info -->
+                <div class="side-panel left-panel">
+                    <div class="panel-section character-card">
+                        <h3 id="char-display-name">Hero Name</h3>
+                        <p id="char-display-info" class="char-info">Race Class Level</p>
+
+                        <div class="health-bar-container">
+                            <div class="health-bar">
+                                <div class="health-fill" id="health-fill"></div>
+                            </div>
+                            <span class="health-text" id="health-text">HP: 10/10</span>
+                        </div>
+
+                        <div class="char-stats-mini">
+                            <div class="mini-stat"><span>AC</span><span id="display-ac">10</span></div>
+                            <div class="mini-stat"><span>Level</span><span id="display-level">1</span></div>
+                            <div class="mini-stat"><span>XP</span><span id="display-xp">0</span></div>
+                            <div class="mini-stat"><span>Gold</span><span id="display-gold">0</span></div>
+                        </div>
+
+                        <div class="ability-scores-mini" id="ability-scores-mini">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <h4>Equipment</h4>
+                        <ul id="equipment-list" class="item-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+
+                    <div class="panel-section">
+                        <h4>Abilities</h4>
+                        <ul id="abilities-list" class="item-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Center - Main Story Area -->
+                <div class="main-panel">
+                    <div class="story-area" id="story-area">
+                        <div class="narrative" id="narrative">
+                            <!-- Story text appears here -->
+                        </div>
+                    </div>
+
+                    <!-- Combat Area (shown during combat) -->
+                    <div id="combat-area" class="combat-area hidden">
+                        <h3>⚔️ Combat ⚔️</h3>
+                        <div id="enemy-list" class="enemy-list">
+                            <!-- Enemy cards appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Dice Roll Display -->
+                    <div id="dice-results" class="dice-results hidden">
+                        <div class="dice-animation">
+                            <span class="rolling-dice">🎲</span>
+                        </div>
+                        <div id="roll-details" class="roll-details"></div>
+                    </div>
+
+                    <!-- Action Choices -->
+                    <div class="choices-area">
+                        <h4>What do you do?</h4>
+                        <div id="choices" class="choices-grid">
+                            <!-- Choice buttons appear here -->
+                        </div>
+                        <div class="custom-action">
+                            <input type="text" id="custom-action-input" placeholder="Or describe your own action...">
+                            <button class="btn-secondary" onclick="submitCustomAction()">
+                                ⚡ Do It
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Game Log -->
+                <div class="side-panel right-panel">
+                    <div class="panel-section">
+                        <h4>📜 Adventure Log</h4>
+                        <div id="game-log" class="game-log">
+                            <!-- Log entries appear here -->
+                        </div>
+                    </div>
+
+                    <div class="panel-section dice-roller">
+                        <h4>🎲 Quick Roll</h4>
+                        <div class="quick-dice">
+                            <button onclick="quickRoll(4)">d4</button>
+                            <button onclick="quickRoll(6)">d6</button>
+                            <button onclick="quickRoll(8)">d8</button>
+                            <button onclick="quickRoll(10)">d10</button>
+                            <button onclick="quickRoll(12)">d12</button>
+                            <button onclick="quickRoll(20)">d20</button>
+                            <button onclick="quickRoll(100)">d100</button>
+                        </div>
+                        <div id="quick-roll-result" class="quick-roll-result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameover-screen" class="screen">
+            <div class="gameover-content">
+                <h1>☠️ You Have Fallen ☠️</h1>
+                <p id="death-message">Your adventure ends here...</p>
+                <div class="final-stats">
+                    <p>Level Reached: <span id="final-level">1</span></p>
+                    <p>Gold Collected: <span id="final-gold">0</span></p>
+                    <p>Enemies Defeated: <span id="final-kills">0</span></p>
+                </div>
+                <button class="btn-primary" onclick="restartGame()">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements for atmosphere (optional) -->
+    <audio id="dice-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRl9vT19teleN..." type="audio/wav">
+    </audio>
+
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>
