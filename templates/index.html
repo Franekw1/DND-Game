@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 5e Adventure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="parchment-bg">
+        <!-- Header -->
+        <header class="game-header">
+            <h1 class="game-title">⚔️ Dungeons & Dragons 5e ⚔️</h1>
+            <p class="subtitle">Interactive Text Adventure</p>
+        </header>
+
+        <!-- Character Creation Screen -->
+        <div id="character-creation" class="screen active">
+            <div class="card">
+                <h2>Create Your Hero</h2>
+                <form id="char-form">
+                    <div class="form-group">
+                        <label for="char-name">Character Name:</label>
+                        <input type="text" id="char-name" required placeholder="Enter your hero's name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="char-race">Race:</label>
+                        <select id="char-race" required>
+                            <option value="">Choose your race...</option>
+                            <option value="Human">Human - Versatile (+1 all stats)</option>
+                            <option value="Elf">Elf - Graceful (+2 DEX, +1 INT)</option>
+                            <option value="Dwarf">Dwarf - Resilient (+2 CON, +1 WIS)</option>
+                            <option value="Halfling">Halfling - Lucky (+2 DEX, +1 CHA)</option>
+                            <option value="Half-Orc">Half-Orc - Savage (+2 STR, +1 CON)</option>
+                            <option value="Gnome">Gnome - Cunning (+2 INT, +1 DEX)</option>
+                            <option value="Tiefling">Tiefling - Infernal (+2 CHA, +1 INT)</option>
+                            <option value="Dragonborn">Dragonborn - Powerful (+2 STR, +1 CHA)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="char-class">Class:</label>
+                        <select id="char-class" required>
+                            <option value="">Choose your class...</option>
+                            <option value="Fighter">Fighter - Master of Arms (d10 Hit Die)</option>
+                            <option value="Wizard">Wizard - Arcane Scholar (d6 Hit Die)</option>
+                            <option value="Rogue">Rogue - Shadow Stalker (d8 Hit Die)</option>
+                            <option value="Cleric">Cleric - Divine Servant (d8 Hit Die)</option>
+                            <option value="Ranger">Ranger - Wilderness Scout (d10 Hit Die)</option>
+                            <option value="Barbarian">Barbarian - Primal Warrior (d12 Hit Die)</option>
+                            <option value="Paladin">Paladin - Holy Knight (d10 Hit Die)</option>
+                            <option value="Bard">Bard - Jack of All Trades (d8 Hit Die)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Begin Adventure</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <!-- Character Sheet Sidebar -->
+                <aside class="character-sheet">
+                    <div class="char-portrait">
+                        <div class="portrait-placeholder">🧙</div>
+                    </div>
+
+                    <div class="char-info">
+                        <h3 id="char-display-name">Hero</h3>
+                        <p id="char-display-race-class">Human Fighter</p>
+                        <p id="char-display-level">Level 1</p>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>Hit Points</h4>
+                        <div class="hp-bar-container">
+                            <div class="hp-bar" id="hp-bar"></div>
+                            <span class="hp-text" id="hp-text">10/10</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>Ability Scores</h4>
+                        <div class="abilities">
+                            <div class="ability">
+                                <span class="ability-name">STR</span>
+                                <span class="ability-score" id="stat-str">10</span>
+                                <span class="ability-mod" id="mod-str">+0</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-name">DEX</span>
+                                <span class="ability-score" id="stat-dex">10</span>
+                                <span class="ability-mod" id="mod-dex">+0</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-name">CON</span>
+                                <span class="ability-score" id="stat-con">10</span>
+                                <span class="ability-mod" id="mod-con">+0</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-name">INT</span>
+                                <span class="ability-score" id="stat-int">10</span>
+                                <span class="ability-mod" id="mod-int">+0</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-name">WIS</span>
+                                <span class="ability-score" id="stat-wis">10</span>
+                                <span class="ability-mod" id="mod-wis">+0</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-name">CHA</span>
+                                <span class="ability-score" id="stat-cha">10</span>
+                                <span class="ability-mod" id="mod-cha">+0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>Combat Stats</h4>
+                        <p><strong>AC:</strong> <span id="char-ac">10</span></p>
+                        <p><strong>XP:</strong> <span id="char-xp">0</span></p>
+                        <p><strong>Gold:</strong> <span id="char-gold">50</span> 💰</p>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>Inventory</h4>
+                        <ul id="inventory-list">
+                            <li>Adventurer's Pack</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn-secondary" id="rest-btn">Short Rest 🏕️</button>
+                </aside>
+
+                <!-- Main Game Area -->
+                <main class="game-main">
+                    <!-- Story Display -->
+                    <div class="story-container">
+                        <div id="story-text" class="story-text">
+                            <!-- Story will be displayed here -->
+                        </div>
+                    </div>
+
+                    <!-- Combat Area -->
+                    <div id="combat-area" class="combat-area hidden">
+                        <div class="enemy-display">
+                            <h3 id="enemy-name">Enemy</h3>
+                            <div class="enemy-hp-bar-container">
+                                <div class="enemy-hp-bar" id="enemy-hp-bar"></div>
+                                <span class="hp-text" id="enemy-hp-text">0/0</span>
+                            </div>
+                            <p><strong>AC:</strong> <span id="enemy-ac">10</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Dice Roll Display -->
+                    <div id="dice-display" class="dice-display hidden">
+                        <div class="dice-animation">🎲</div>
+                        <p id="dice-result"></p>
+                    </div>
+
+                    <!-- Action Log -->
+                    <div class="action-log">
+                        <div id="action-messages"></div>
+                    </div>
+
+                    <!-- Choices -->
+                    <div class="choices-container">
+                        <h3>What do you do?</h3>
+                        <div id="choices-list" class="choices-list">
+                            <!-- Choices will be generated here -->
+                        </div>
+                        <div class="custom-action">
+                            <input type="text" id="custom-input" placeholder="Describe your own action...">
+                            <button class="btn btn-primary" id="custom-action-btn">Perform Custom Action</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Rolling the dice of fate...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+</body>
+</html>

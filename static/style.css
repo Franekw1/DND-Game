@@ -1,0 +1,576 @@
+/* ============================================================================
+   D&D 5e Web App Styles
+   Parchment and Fantasy Theme
+   ============================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
+    color: #2c1810;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.parchment-bg {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #f4e8d0 0%, #e8dcc0 100%);
+    border: 3px solid #8b7355;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    min-height: calc(100vh - 40px);
+}
+
+/* ============================================================================
+   Header
+   ============================================================================ */
+
+.game-header {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(to bottom, #8b4513 0%, #654321 100%);
+    color: #f4e8d0;
+    border-bottom: 3px solid #8b7355;
+    border-radius: 7px 7px 0 0;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.game-title {
+    font-size: 3em;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* ============================================================================
+   Screens
+   ============================================================================ */
+
+.screen {
+    display: none;
+    padding: 40px;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* ============================================================================
+   Cards & Forms
+   ============================================================================ */
+
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #8b7355;
+    border-radius: 10px;
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #8b4513;
+    font-size: 2em;
+    border-bottom: 2px solid #8b7355;
+    padding-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #654321;
+    font-size: 1.1em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #8b7355;
+    border-radius: 5px;
+    font-size: 1em;
+    background: #fff;
+    color: #2c1810;
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.form-group select option {
+    padding: 10px;
+}
+
+/* ============================================================================
+   Buttons
+   ============================================================================ */
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(to bottom, #d4af37 0%, #b8941e 100%);
+    color: #2c1810;
+    border: 2px solid #8b7355;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to bottom, #e0c050 0%, #c4a030 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(to bottom, #8b7355 0%, #6b5845 100%);
+    color: #f4e8d0;
+    border: 2px solid #654321;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(to bottom, #9b8365 0%, #7b6855 100%);
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   Game Container
+   ============================================================================ */
+
+.game-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    min-height: 600px;
+}
+
+/* ============================================================================
+   Character Sheet Sidebar
+   ============================================================================ */
+
+.character-sheet {
+    background: rgba(255, 255, 255, 0.95);
+    border: 3px solid #8b7355;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    height: fit-content;
+}
+
+.char-portrait {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.portrait-placeholder {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4em;
+    border: 3px solid #d4af37;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.char-info {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #8b7355;
+    padding-bottom: 15px;
+}
+
+.char-info h3 {
+    font-size: 1.5em;
+    color: #8b4513;
+    margin-bottom: 5px;
+}
+
+.char-info p {
+    color: #654321;
+    margin: 3px 0;
+}
+
+.stat-block {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(245, 222, 179, 0.5);
+    border-radius: 8px;
+    border: 1px solid #8b7355;
+}
+
+.stat-block h4 {
+    margin-bottom: 10px;
+    color: #8b4513;
+    border-bottom: 1px solid #8b7355;
+    padding-bottom: 5px;
+}
+
+/* HP Bar */
+.hp-bar-container {
+    position: relative;
+    height: 30px;
+    background: #2c1810;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 2px solid #654321;
+}
+
+.hp-bar {
+    height: 100%;
+    background: linear-gradient(to right, #dc143c 0%, #8b0000 100%);
+    transition: width 0.5s ease;
+    border-radius: 13px;
+}
+
+.hp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Abilities */
+.abilities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.ability {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+}
+
+.ability-name {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #654321;
+}
+
+.ability-score {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #8b4513;
+}
+
+.ability-mod {
+    font-size: 1em;
+    color: #2c1810;
+}
+
+/* Inventory */
+#inventory-list {
+    list-style: none;
+    padding: 0;
+}
+
+#inventory-list li {
+    padding: 5px;
+    border-bottom: 1px dashed #8b7355;
+    font-size: 0.9em;
+}
+
+/* ============================================================================
+   Main Game Area
+   ============================================================================ */
+
+.game-main {
+    background: rgba(255, 255, 255, 0.95);
+    border: 3px solid #8b7355;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Story Container */
+.story-container {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: rgba(245, 222, 179, 0.3);
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    min-height: 150px;
+}
+
+.story-text {
+    font-size: 1.2em;
+    line-height: 1.8;
+    color: #2c1810;
+}
+
+.story-text p {
+    margin-bottom: 15px;
+}
+
+/* Combat Area */
+.combat-area {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(220, 20, 60, 0.1);
+    border: 3px solid #8b0000;
+    border-radius: 8px;
+}
+
+.combat-area.hidden {
+    display: none;
+}
+
+.enemy-display {
+    text-align: center;
+}
+
+.enemy-display h3 {
+    font-size: 1.8em;
+    color: #8b0000;
+    margin-bottom: 15px;
+}
+
+.enemy-hp-bar-container {
+    position: relative;
+    height: 30px;
+    background: #2c1810;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 2px solid #654321;
+    max-width: 400px;
+    margin: 15px auto;
+}
+
+.enemy-hp-bar {
+    height: 100%;
+    background: linear-gradient(to right, #ff0000 0%, #cc0000 100%);
+    transition: width 0.5s ease;
+    border-radius: 13px;
+}
+
+/* Dice Display */
+.dice-display {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+}
+
+.dice-display.hidden {
+    display: none;
+}
+
+.dice-animation {
+    font-size: 4em;
+    animation: roll 0.5s ease-in-out;
+}
+
+@keyframes roll {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+}
+
+#dice-result {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #8b4513;
+    margin-top: 10px;
+}
+
+/* Action Log */
+.action-log {
+    margin-bottom: 30px;
+    padding: 15px;
+    background: rgba(139, 115, 85, 0.1);
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.action-message {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-left: 3px solid #8b4513;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Choices */
+.choices-container h3 {
+    margin-bottom: 20px;
+    color: #8b4513;
+    font-size: 1.5em;
+}
+
+.choices-list {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.choice-btn {
+    padding: 15px 20px;
+    background: linear-gradient(to bottom, #f4e8d0 0%, #e8dcc0 100%);
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+    color: #2c1810;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.choice-btn:hover {
+    background: linear-gradient(to bottom, #fff8e0 0%, #f4e8d0 100%);
+    transform: translateX(5px);
+    border-color: #d4af37;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+}
+
+.choice-btn:before {
+    content: "⚔️ ";
+    margin-right: 10px;
+}
+
+/* Custom Action */
+.custom-action {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 2px dashed #d4af37;
+    border-radius: 8px;
+}
+
+.custom-action input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #8b7355;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.custom-action button {
+    width: 100%;
+}
+
+/* ============================================================================
+   Loading Overlay
+   ============================================================================ */
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f4e8d0;
+    border-top: 5px solid #d4af37;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading p {
+    color: #f4e8d0;
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+    .game-container {
+        grid-template-columns: 1fr;
+    }
+
+    .character-sheet {
+        order: 2;
+    }
+
+    .game-main {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2em;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .abilities {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
