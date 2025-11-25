@@ -66,7 +66,32 @@ function updateCharacterDisplay() {
     document.getElementById('char-xp').textContent = char.xp;
     document.getElementById('char-gold').textContent = char.gold;
 
-    // Inventory
+    // Equipped items
+    if (char.equipped) {
+        document.getElementById('equipped-weapon').textContent = char.equipped.weapon || 'None';
+        document.getElementById('equipped-armor').textContent = char.equipped.armor || 'None';
+        document.getElementById('equipped-accessory').textContent = char.equipped.accessory || 'None';
+    }
+
+    // Equipment inventory
+    const equipmentDiv = document.getElementById('equipment-inventory');
+    if (char.equipment_inventory && char.equipment_inventory.length > 0) {
+        equipmentDiv.innerHTML = '';
+        char.equipment_inventory.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'equipment-item';
+            itemDiv.innerHTML = `
+                <span class="item-name">${item.name}</span>
+                <span class="item-stats">${item.type}</span>
+            `;
+            itemDiv.onclick = () => equipItem(item.type, item.name);
+            equipmentDiv.appendChild(itemDiv);
+        });
+    } else {
+        equipmentDiv.innerHTML = '<p class="empty-inventory">No equipment</p>';
+    }
+
+    // Regular inventory
     const inventoryList = document.getElementById('inventory-list');
     inventoryList.innerHTML = '';
     char.inventory.forEach(item => {
@@ -270,6 +295,172 @@ async function takeRest() {
 }
 
 // ============================================================================
+// Shop and Equipment Functions
+// ============================================================================
+
+async function openShop() {
+    showLoading();
+
+    try {
+        const response = await fetch('/api/shop');
+        const data = await response.json();
+
+        displayShop(data.shop, data.gold);
+        document.getElementById('shop-modal').classList.remove('hidden');
+    } catch (error) {
+        console.error('Error loading shop:', error);
+        alert('Failed to load shop');
+    } finally {
+        hideLoading();
+    }
+}
+
+function displayShop(shop, gold) {
+    document.getElementById('shop-gold').textContent = gold;
+
+    // Display weapons
+    const weaponsDiv = document.getElementById('shop-weapons');
+    weaponsDiv.innerHTML = '';
+    shop.weapons.forEach(item => {
+        weaponsDiv.appendChild(createShopItem(item, 'weapons', gold));
+    });
+
+    // Display armor
+    const armorDiv = document.getElementById('shop-armor');
+    armorDiv.innerHTML = '';
+    shop.armor.forEach(item => {
+        armorDiv.appendChild(createShopItem(item, 'armor', gold));
+    });
+
+    // Display accessories
+    const accessoriesDiv = document.getElementById('shop-accessories');
+    accessoriesDiv.innerHTML = '';
+    shop.accessories.forEach(item => {
+        accessoriesDiv.appendChild(createShopItem(item, 'accessories', gold));
+    });
+}
+
+function createShopItem(item, type, playerGold) {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'shop-item';
+
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'shop-item-info';
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = `shop-item-name rarity-${item.rarity.toLowerCase()}`;
+    nameDiv.textContent = `${item.rarity_icon} ${item.name}`;
+
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'shop-item-stats';
+
+    if (type === 'weapons') {
+        statsDiv.innerHTML = `Damage: ${item.damage} | Attack Bonus: +${item.attack_bonus}`;
+    } else if (type === 'armor') {
+        statsDiv.innerHTML = `AC Bonus: +${item.ac_bonus} | HP Bonus: +${item.hp_bonus}`;
+    } else if (type === 'accessories') {
+        const bonuses = Object.entries(item.stat_bonus).map(([stat, bonus]) =>
+            `${stat.toUpperCase()} +${bonus}`
+        ).join(', ');
+        statsDiv.innerHTML = `Stats: ${bonuses}`;
+    }
+
+    const levelDiv = document.createElement('div');
+    levelDiv.className = 'shop-item-stats';
+    levelDiv.textContent = `Required Level: ${item.level}`;
+
+    infoDiv.appendChild(nameDiv);
+    infoDiv.appendChild(statsDiv);
+    infoDiv.appendChild(levelDiv);
+
+    const priceSpan = document.createElement('span');
+    priceSpan.className = 'shop-item-price';
+    priceSpan.textContent = `${item.price} 💰`;
+
+    const buyBtn = document.createElement('button');
+    buyBtn.className = 'buy-btn';
+    buyBtn.textContent = 'Buy';
+    buyBtn.onclick = () => buyItem(type, item.name, item.price);
+
+    if (playerGold < item.price) {
+        buyBtn.disabled = true;
+    }
+
+    itemDiv.appendChild(infoDiv);
+    itemDiv.appendChild(priceSpan);
+    itemDiv.appendChild(buyBtn);
+
+    return itemDiv;
+}
+
+async function buyItem(type, name, price) {
+    showLoading();
+
+    try {
+        const response = await fetch('/api/buy', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                type: type,
+                name: name
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            gameState.character = data.character;
+            updateCharacterDisplay();
+            addActionMessage(data.message);
+
+            // Refresh shop with new gold amount
+            openShop();
+        } else {
+            alert(data.error || 'Failed to purchase item');
+        }
+    } catch (error) {
+        console.error('Error buying item:', error);
+        alert('Failed to purchase item');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function equipItem(type, name) {
+    showLoading();
+
+    try {
+        const response = await fetch('/api/equip', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                type: type,
+                name: name
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            gameState.character = data.character;
+            updateCharacterDisplay();
+            addActionMessage(data.message);
+        } else {
+            alert(data.error || 'Failed to equip item');
+        }
+    } catch (error) {
+        console.error('Error equipping item:', error);
+        alert('Failed to equip item');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ============================================================================
 // Event Listeners
 // ============================================================================
 
@@ -318,6 +509,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Rest button
     const restBtn = document.getElementById('rest-btn');
     restBtn.addEventListener('click', takeRest);
+
+    // Shop button
+    const shopBtn = document.getElementById('shop-btn');
+    shopBtn.addEventListener('click', openShop);
+
+    // Close shop modal
+    const closeShop = document.getElementById('close-shop');
+    closeShop.addEventListener('click', () => {
+        document.getElementById('shop-modal').classList.add('hidden');
+    });
+
+    // Shop tabs
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.shop-tab-content').forEach(c => c.classList.remove('active'));
+
+            // Add active class to clicked tab
+            btn.classList.add('active');
+            const tab = btn.dataset.tab;
+            document.getElementById(`shop-${tab}`).classList.add('active');
+        });
+    });
+
+    // Close modal when clicking outside
+    const shopModal = document.getElementById('shop-modal');
+    shopModal.addEventListener('click', (e) => {
+        if (e.target === shopModal) {
+            shopModal.classList.add('hidden');
+        }
+    });
 });
 
 // ============================================================================

@@ -126,13 +126,30 @@
                     </div>
 
                     <div class="stat-block">
-                        <h4>Inventory</h4>
+                        <h4>⚔️ Equipped</h4>
+                        <div class="equipped-items">
+                            <p><strong>Weapon:</strong> <span id="equipped-weapon">None</span></p>
+                            <p><strong>Armor:</strong> <span id="equipped-armor">None</span></p>
+                            <p><strong>Accessory:</strong> <span id="equipped-accessory">None</span></p>
+                        </div>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>🎒 Equipment</h4>
+                        <div id="equipment-inventory" class="equipment-list">
+                            <p class="empty-inventory">No items</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>📦 Items</h4>
                         <ul id="inventory-list">
                             <li>Adventurer's Pack</li>
                         </ul>
                     </div>
 
                     <button class="btn btn-secondary" id="rest-btn">Short Rest 🏕️</button>
+                    <button class="btn btn-secondary" id="shop-btn">Visit Shop 🏪</button>
                 </aside>
 
                 <!-- Main Game Area -->
@@ -179,6 +196,31 @@
                         </div>
                     </div>
                 </main>
+            </div>
+        </div>
+
+        <!-- Shop Modal -->
+        <div id="shop-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🏪 Merchant's Shop</h2>
+                    <span class="close-modal" id="close-shop">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p class="shop-gold">Your Gold: <span id="shop-gold">0</span> 💰</p>
+
+                    <div class="shop-tabs">
+                        <button class="tab-btn active" data-tab="weapons">⚔️ Weapons</button>
+                        <button class="tab-btn" data-tab="armor">🛡️ Armor</button>
+                        <button class="tab-btn" data-tab="accessories">💍 Accessories</button>
+                    </div>
+
+                    <div class="shop-content">
+                        <div id="shop-weapons" class="shop-tab-content active"></div>
+                        <div id="shop-armor" class="shop-tab-content"></div>
+                        <div id="shop-accessories" class="shop-tab-content"></div>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -296,10 +296,63 @@ body {
     color: #2c1810;
 }
 
+/* Equipped Items */
+.equipped-items p {
+    margin: 8px 0;
+    font-size: 0.9em;
+}
+
+.equipped-items span {
+    color: #8b4513;
+    font-weight: bold;
+}
+
+/* Equipment List */
+.equipment-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.equipment-item {
+    padding: 8px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #8b7355;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85em;
+}
+
+.equipment-item:hover {
+    background: rgba(212, 175, 55, 0.3);
+    transform: translateX(3px);
+}
+
+.equipment-item .item-name {
+    font-weight: bold;
+    display: block;
+}
+
+.equipment-item .item-stats {
+    font-size: 0.8em;
+    color: #654321;
+    margin-top: 3px;
+}
+
+.empty-inventory {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
 /* Inventory */
 #inventory-list {
     list-style: none;
     padding: 0;
+    max-height: 100px;
+    overflow-y: auto;
 }
 
 #inventory-list li {
@@ -544,6 +597,187 @@ body {
 }
 
 /* ============================================================================
+   Shop Modal
+   ============================================================================ */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: linear-gradient(to bottom, #f4e8d0 0%, #e8dcc0 100%);
+    border: 3px solid #8b7355;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.modal-header {
+    background: linear-gradient(to bottom, #8b4513 0%, #654321 100%);
+    color: #f4e8d0;
+    padding: 20px;
+    border-radius: 7px 7px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.close-modal {
+    font-size: 2em;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.close-modal:hover {
+    transform: scale(1.2);
+    color: #d4af37;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.shop-gold {
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #d4af37;
+    margin-bottom: 20px;
+}
+
+.shop-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #8b7355;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: rgba(139, 115, 85, 0.3);
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: rgba(212, 175, 55, 0.3);
+}
+
+.tab-btn.active {
+    background: rgba(212, 175, 55, 0.5);
+    border-bottom-color: #d4af37;
+}
+
+.shop-content {
+    min-height: 400px;
+}
+
+.shop-tab-content {
+    display: none;
+}
+
+.shop-tab-content.active {
+    display: block;
+}
+
+.shop-item {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.shop-item:hover {
+    transform: translateX(5px);
+    border-color: #d4af37;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.shop-item-info {
+    flex: 1;
+}
+
+.shop-item-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #8b4513;
+    margin-bottom: 5px;
+}
+
+.shop-item-stats {
+    font-size: 0.9em;
+    color: #654321;
+    margin: 3px 0;
+}
+
+.shop-item-price {
+    font-size: 1.3em;
+    color: #d4af37;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.buy-btn {
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: 2px solid #2e7d32;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.buy-btn:hover {
+    background: linear-gradient(to bottom, #5bc05b 0%, #4CAF50 100%);
+    transform: scale(1.05);
+}
+
+.buy-btn:disabled {
+    background: #999;
+    border-color: #666;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Rarity Colors */
+.rarity-common { color: #888; }
+.rarity-uncommon { color: #1eff00; }
+.rarity-rare { color: #0070dd; }
+.rarity-epic { color: #a335ee; }
+.rarity-legendary { color: #ff8000; }
+
+/* ============================================================================
    Responsive Design
    ============================================================================ */
 
@@ -559,6 +793,11 @@ body {
     .game-main {
         order: 1;
     }
+
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
 }
 
 @media (max-width: 768px) {
@@ -572,5 +811,18 @@ body {
 
     .abilities {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .shop-tabs {
+        flex-direction: column;
+    }
+
+    .shop-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .shop-item-price {
+        margin: 10px 0;
     }
 }
