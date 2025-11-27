@@ -82,6 +82,19 @@
                         </div>
                     </div>
 
+                    <div class="stat-block" id="mana-block" style="display:none;">
+                        <h4>Mana</h4>
+                        <div class="mana-bar-container">
+                            <div class="mana-bar" id="mana-bar"></div>
+                            <span class="mana-text" id="mana-text">0/0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-block" id="status-effects-block" style="display:none;">
+                        <h4>⚡ Status Effects</h4>
+                        <div id="status-effects-list" class="status-list"></div>
+                    </div>
+
                     <div class="stat-block">
                         <h4>Ability Scores</h4>
                         <div class="abilities">
@@ -163,6 +176,9 @@
 
                     <button class="btn btn-secondary" id="rest-btn">Short Rest 🏕️</button>
                     <button class="btn btn-secondary" id="shop-btn">Visit Shop 🏪</button>
+                    <button class="btn btn-secondary" id="spellbook-btn" style="display:none;">Spellbook 📖</button>
+                    <button class="btn btn-secondary" id="save-btn">Save Game 💾</button>
+                    <button class="btn btn-secondary" id="load-btn">Load Game 📂</button>
                 </aside>
 
                 <!-- Main Game Area -->
@@ -246,6 +262,35 @@
             </div>
         </div>
 
+        <!-- Spellbook Modal -->
+        <div id="spellbook-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📖 Spellbook</h2>
+                    <span class="close-modal" id="close-spellbook">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p class="mana-display">Mana: <span id="spell-mana">0/0</span></p>
+                    <div id="spell-list" class="spell-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save/Load Modal -->
+        <div id="save-load-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="save-load-title">💾 Save/Load Game</h2>
+                    <span class="close-modal" id="close-save-load">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <textarea id="save-data" class="save-data-box" placeholder="Paste save data here to load..."></textarea>
+                    <button class="btn btn-primary" id="copy-save-btn">Copy Save Data</button>
+                    <button class="btn btn-primary" id="load-save-btn">Load Save Data</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Loading Overlay -->
         <div id="loading" class="loading hidden">
             <div class="spinner"></div>
@@ -254,5 +299,6 @@
     </div>
 
     <script src="{{ url_for('static', filename='game.js') }}"></script>
+    <script src="{{ url_for('static', filename='advanced.js') }}"></script>
 </body>
 </html>

@@ -943,3 +943,149 @@ body {
         margin: 10px 0;
     }
 }
+
+/* ============================================================================
+   Advanced Features Styling
+   ============================================================================ */
+
+/* Mana Bar */
+.mana-bar-container {
+    position: relative;
+    height: 25px;
+    background: #1a0f3a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #4a2f7a;
+}
+
+.mana-bar {
+    height: 100%;
+    background: linear-gradient(to right, #6a4fc3 0%, #4a2f9a 100%);
+    transition: width 0.5s ease;
+    border-radius: 10px;
+}
+
+.mana-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-size: 0.9em;
+}
+
+/* Status Effects */
+.status-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.status-effect {
+    padding: 6px 12px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 2px solid #d4af37;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #2c1810;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-effect.poison { border-color: #9b59b6; background: rgba(155, 89, 182, 0.2); }
+.status-effect.blessed { border-color: #f1c40f; background: rgba(241, 196, 15, 0.2); }
+.status-effect.stunned { border-color: #e74c3c; background: rgba(231, 76, 60, 0.2); }
+.status-effect.burning { border-color: #e67e22; background: rgba(230, 126, 34, 0.2); }
+.status-effect.hasted { border-color: #3498db; background: rgba(52, 152, 219, 0.2); }
+.status-effect.shielded { border-color: #2ecc71; background: rgba(46, 204, 113, 0.2); }
+
+/* Spellbook */
+.spell-list {
+    display: grid;
+    gap: 15px;
+}
+
+.spell-item {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.spell-item:hover {
+    background: rgba(212, 175, 55, 0.3);
+    transform: translateX(5px);
+    border-color: #d4af37;
+}
+
+.spell-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spell-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #8b4513;
+    margin-bottom: 5px;
+}
+
+.spell-cost {
+    color: #6a4fc3;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.spell-description {
+    font-size: 0.9em;
+    color: #654321;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.spell-stats {
+    font-size: 0.95em;
+    color: #2c1810;
+    margin-top: 8px;
+}
+
+/* Save/Load */
+.save-data-box {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+
+.mana-display {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #6a4fc3;
+    margin-bottom: 20px;
+}
+
+/* ============================================================================
+   Responsive Design Updates
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .status-list {
+        flex-direction: column;
+    }
+
+    .spell-list {
+        grid-template-columns: 1fr;
+    }
+}
