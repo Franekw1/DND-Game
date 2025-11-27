@@ -79,14 +79,120 @@ RACES = {
 }
 
 CLASSES = {
-    'Fighter': {'hit_die': 10, 'primary': 'str'},
-    'Wizard': {'hit_die': 6, 'primary': 'int'},
-    'Rogue': {'hit_die': 8, 'primary': 'dex'},
-    'Cleric': {'hit_die': 8, 'primary': 'wis'},
-    'Ranger': {'hit_die': 10, 'primary': 'dex'},
-    'Barbarian': {'hit_die': 12, 'primary': 'str'},
-    'Paladin': {'hit_die': 10, 'primary': 'str'},
-    'Bard': {'hit_die': 8, 'primary': 'cha'}
+    'Fighter': {'hit_die': 10, 'primary': 'str', 'spellcaster': False},
+    'Wizard': {'hit_die': 6, 'primary': 'int', 'spellcaster': True, 'spell_stat': 'int'},
+    'Rogue': {'hit_die': 8, 'primary': 'dex', 'spellcaster': False},
+    'Cleric': {'hit_die': 8, 'primary': 'wis', 'spellcaster': True, 'spell_stat': 'wis'},
+    'Ranger': {'hit_die': 10, 'primary': 'dex', 'spellcaster': True, 'spell_stat': 'wis'},
+    'Barbarian': {'hit_die': 12, 'primary': 'str', 'spellcaster': False},
+    'Paladin': {'hit_die': 10, 'primary': 'str', 'spellcaster': True, 'spell_stat': 'cha'},
+    'Bard': {'hit_die': 8, 'primary': 'cha', 'spellcaster': True, 'spell_stat': 'cha'}
+}
+
+# ============================================================================
+# SPELL SYSTEM
+# ============================================================================
+SPELLS = {
+    'Wizard': {
+        'Magic Missile': {'level': 1, 'damage': '3d4+3', 'mana_cost': 2, 'description': 'Auto-hit arcane missiles', 'type': 'damage'},
+        'Fireball': {'level': 3, 'damage': '8d6', 'mana_cost': 5, 'description': 'Explosive fire damage', 'type': 'damage'},
+        'Shield': {'level': 1, 'ac_bonus': 5, 'duration': 1, 'mana_cost': 2, 'description': '+5 AC for 1 turn', 'type': 'buff'},
+        'Lightning Bolt': {'level': 3, 'damage': '8d6', 'mana_cost': 5, 'description': 'Chain lightning', 'type': 'damage'},
+        'Haste': {'level': 3, 'duration': 3, 'mana_cost': 4, 'description': 'Double attacks for 3 turns', 'type': 'buff'}
+    },
+    'Cleric': {
+        'Cure Wounds': {'level': 1, 'heal': '1d8+3', 'mana_cost': 2, 'description': 'Heal wounds', 'type': 'heal'},
+        'Bless': {'level': 1, 'attack_bonus': 1, 'duration': 3, 'mana_cost': 2, 'description': '+1 to attacks for 3 turns', 'type': 'buff'},
+        'Sacred Flame': {'level': 1, 'damage': '2d8', 'mana_cost': 1, 'description': 'Holy fire', 'type': 'damage'},
+        'Mass Healing': {'level': 3, 'heal': '3d8+5', 'mana_cost': 6, 'description': 'Heal entire party', 'type': 'heal'},
+        'Divine Smite': {'level': 2, 'damage': '4d8', 'mana_cost': 3, 'description': 'Holy damage', 'type': 'damage'}
+    },
+    'Paladin': {
+        'Lay on Hands': {'level': 1, 'heal': '2d8+2', 'mana_cost': 2, 'description': 'Heal yourself or ally', 'type': 'heal'},
+        'Smite': {'level': 1, 'damage': '2d8', 'mana_cost': 2, 'description': 'Holy weapon strike', 'type': 'damage'},
+        'Protection': {'level': 2, 'ac_bonus': 3, 'duration': 2, 'mana_cost': 3, 'description': '+3 AC for 2 turns', 'type': 'buff'}
+    },
+    'Bard': {
+        'Vicious Mockery': {'level': 1, 'damage': '1d4', 'debuff': 'disadvantage', 'mana_cost': 1, 'description': 'Damage and enemy disadvantage', 'type': 'damage'},
+        'Healing Word': {'level': 1, 'heal': '1d4+4', 'mana_cost': 2, 'description': 'Quick heal', 'type': 'heal'},
+        'Inspiration': {'level': 1, 'attack_bonus': 2, 'duration': 3, 'mana_cost': 2, 'description': '+2 to party attacks', 'type': 'buff'}
+    },
+    'Ranger': {
+        'Hunters Mark': {'level': 1, 'damage_bonus': '1d6', 'duration': 5, 'mana_cost': 2, 'description': 'Mark enemy for extra damage', 'type': 'buff'},
+        'Cure Wounds': {'level': 1, 'heal': '1d8+2', 'mana_cost': 2, 'description': 'Heal wounds', 'type': 'heal'}
+    }
+}
+
+# ============================================================================
+# STATUS EFFECTS
+# ============================================================================
+STATUS_EFFECTS = {
+    'Poisoned': {'attack_penalty': -2, 'damage_per_turn': 5, 'description': 'Taking poison damage'},
+    'Blessed': {'attack_bonus': 1, 'save_bonus': 1, 'description': 'Divine blessing'},
+    'Stunned': {'cannot_act': True, 'description': 'Unable to act'},
+    'Burning': {'damage_per_turn': 8, 'description': 'On fire!'},
+    'Hasted': {'extra_attack': True, 'description': 'Moving with supernatural speed'},
+    'Shielded': {'ac_bonus': 5, 'description': 'Protected by magical shield'},
+    'Inspired': {'attack_bonus': 2, 'description': 'Inspired by bardic performance'}
+}
+
+# ============================================================================
+# SKILLS SYSTEM
+# ============================================================================
+SKILLS = {
+    'Persuasion': 'cha',
+    'Intimidation': 'cha',
+    'Deception': 'cha',
+    'Stealth': 'dex',
+    'Acrobatics': 'dex',
+    'Sleight of Hand': 'dex',
+    'Investigation': 'int',
+    'Arcana': 'int',
+    'History': 'int',
+    'Perception': 'wis',
+    'Insight': 'wis',
+    'Survival': 'wis',
+    'Athletics': 'str',
+    'Medicine': 'wis'
+}
+
+# ============================================================================
+# BOSS BATTLES
+# ============================================================================
+BOSSES = {
+    'Shadow Lord': {
+        'hp': 150,
+        'ac': 18,
+        'attack': 8,
+        'damage': '3d8+5',
+        'xp': 5000,
+        'abilities': ['Shadow Strike', 'Dark Regeneration'],
+        'loot_tier': 'legendary',
+        'description': 'An ancient evil shrouded in darkness',
+        'phase_2_hp': 75  # Triggers special phase
+    },
+    'Dragon Tyrant': {
+        'hp': 200,
+        'ac': 20,
+        'attack': 10,
+        'damage': '4d10+6',
+        'xp': 8000,
+        'abilities': ['Fire Breath', 'Wing Attack'],
+        'loot_tier': 'legendary',
+        'description': 'A massive red dragon of terrible power',
+        'phase_2_hp': 100
+    },
+    'Lich King': {
+        'hp': 180,
+        'ac': 19,
+        'attack': 9,
+        'damage': '3d10+4',
+        'xp': 7000,
+        'abilities': ['Drain Life', 'Summon Undead'],
+        'loot_tier': 'legendary',
+        'description': 'An undead sorcerer of immense magical power',
+        'phase_2_hp': 90
+    }
 }
 
 # ============================================================================
@@ -489,6 +595,15 @@ def create_character():
         starting_weapon = 'Rusty Dagger'
         starting_armor = 'Tattered Robes'
 
+    # Calculate mana for spellcasters
+    is_spellcaster = class_info.get('spellcaster', False)
+    max_mana = 0
+    current_mana = 0
+    if is_spellcaster:
+        spell_stat = class_info['spell_stat']
+        max_mana = 10 + (1 * 5) + modifiers[spell_stat]  # Level 1 starts with base mana
+        current_mana = max_mana
+
     character = {
         'name': data['name'],
         'race': race,
@@ -499,6 +614,8 @@ def create_character():
         'modifiers': modifiers,
         'max_hp': max_hp,
         'current_hp': max_hp,
+        'max_mana': max_mana,
+        'current_mana': current_mana,
         'gold': 100,
         'inventory': ['Adventurer\'s Pack', 'Waterskin', 'Rations (5 days)'],
         'equipped': {
@@ -509,7 +626,10 @@ def create_character():
         'equipment_inventory': [],
         'party': [],  # List of companion instances
         'story_progress': 0,  # Track story advancement
-        'chapter': 1  # Current chapter
+        'chapter': 1,  # Current chapter
+        'status_effects': {},  # Active status effects {effect_name: turns_remaining}
+        'known_spells': list(SPELLS.get(char_class, {}).keys()) if is_spellcaster else [],
+        'boss_kills': 0  # Track boss defeats
     }
 
     # Calculate AC with starting armor
@@ -1004,6 +1124,149 @@ def sell_item():
         })
 
     return jsonify({'error': 'Item not found'}), 404
+
+@app.route('/api/cast_spell', methods=['POST'])
+def cast_spell():
+    """Cast a spell"""
+    character = session.get('character')
+    if not character:
+        return jsonify({'error': 'No character found'}), 400
+
+    data = request.json
+    spell_name = data['spell_name']
+    target = data.get('target', 'enemy')  # 'enemy', 'self', or 'party'
+
+    char_class = character['class']
+    if char_class not in SPELLS or spell_name not in SPELLS[char_class]:
+        return jsonify({'error': 'Spell not known'}), 400
+
+    spell = SPELLS[char_class][spell_name]
+
+    if character['current_mana'] < spell['mana_cost']:
+        return jsonify({'error': 'Not enough mana'}), 400
+
+    # Cast spell
+    character['current_mana'] -= spell['mana_cost']
+    messages = [f"✨ You cast {spell_name}!"]
+
+    result = {}
+
+    if spell['type'] == 'damage':
+        damage_dice = spell['damage'].split('d')
+        dice_count = int(damage_dice[0])
+        dice_sides = int(damage_dice[1].split('+')[0]) if '+' in damage_dice[1] else int(damage_dice[1])
+        damage_bonus = int(damage_dice[1].split('+')[1]) if '+' in damage_dice[1] else 0
+        damage_roll = Dice.roll(dice_sides, dice_count, damage_bonus)
+        messages.append(f"💥 Dealt {damage_roll['total']} magical damage!")
+        result['damage'] = damage_roll['total']
+
+    elif spell['type'] == 'heal':
+        heal_dice = spell['heal'].split('d')
+        dice_count = int(heal_dice[0])
+        dice_sides = int(heal_dice[1].split('+')[0]) if '+' in heal_dice[1] else int(heal_dice[1])
+        heal_bonus = int(heal_dice[1].split('+')[1]) if '+' in heal_dice[1] else 0
+        heal_roll = Dice.roll(dice_sides, dice_count, heal_bonus)
+
+        if target == 'party' and 'Mass' in spell_name:
+            for companion in character.get('party', []):
+                companion['current_hp'] = min(companion['current_hp'] + heal_roll['total'], companion['max_hp'])
+            character['current_hp'] = min(character['current_hp'] + heal_roll['total'], character['max_hp'])
+            messages.append(f"💚 Healed party for {heal_roll['total']} HP!")
+        else:
+            character['current_hp'] = min(character['current_hp'] + heal_roll['total'], character['max_hp'])
+            messages.append(f"💚 Healed {heal_roll['total']} HP!")
+        result['heal'] = heal_roll['total']
+
+    elif spell['type'] == 'buff':
+        duration = spell.get('duration', 1)
+        if 'ac_bonus' in spell:
+            character['status_effects']['Shielded'] = duration
+            messages.append(f"🛡️ AC increased by {spell['ac_bonus']} for {duration} turns!")
+        if 'attack_bonus' in spell:
+            effect_name = 'Blessed' if 'Bless' in spell_name else 'Inspired'
+            character['status_effects'][effect_name] = duration
+            messages.append(f"⚔️ Attack bonus for {duration} turns!")
+        if 'Haste' in spell_name:
+            character['status_effects']['Hasted'] = duration
+            messages.append(f"⚡ Hasted for {duration} turns!")
+
+    session['character'] = character
+
+    return jsonify({
+        'success': True,
+        'messages': messages,
+        'character': character,
+        **result
+    })
+
+@app.route('/api/skill_check', methods=['POST'])
+def skill_check():
+    """Perform a skill check"""
+    character = session.get('character')
+    if not character:
+        return jsonify({'error': 'No character found'}), 400
+
+    data = request.json
+    skill = data['skill']
+    dc = data.get('dc', 15)  # Difficulty Class
+
+    if skill not in SKILLS:
+        return jsonify({'error': 'Invalid skill'}), 400
+
+    ability = SKILLS[skill]
+    modifier = character['modifiers'][ability]
+
+    roll = Dice.d20(modifier)
+
+    success = roll['total'] >= dc
+    result_text = 'Success!' if success else 'Failure!'
+
+    return jsonify({
+        'success': success,
+        'roll': roll,
+        'dc': dc,
+        'message': f"🎲 {skill} check: {roll['chosen']} + {modifier} = {roll['total']} vs DC {dc} - {result_text}"
+    })
+
+@app.route('/api/save_game', methods=['POST'])
+def save_game():
+    """Save game state"""
+    character = session.get('character')
+    game_state = session.get('game_state', {})
+
+    if not character:
+        return jsonify({'error': 'No character found'}), 400
+
+    save_data = {
+        'character': character,
+        'game_state': game_state,
+        'timestamp': datetime.now().isoformat()
+    }
+
+    # Return save data to user (they can copy it)
+    return jsonify({
+        'success': True,
+        'save_data': save_data,
+        'message': 'Game saved! Copy this data to load later.'
+    })
+
+@app.route('/api/load_game', methods=['POST'])
+def load_game():
+    """Load game state"""
+    data = request.json
+    save_data = data.get('save_data')
+
+    if not save_data:
+        return jsonify({'error': 'No save data provided'}), 400
+
+    session['character'] = save_data['character']
+    session['game_state'] = save_data.get('game_state', {})
+
+    return jsonify({
+        'success': True,
+        'character': save_data['character'],
+        'message': 'Game loaded successfully!'
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
