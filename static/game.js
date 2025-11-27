@@ -99,6 +99,50 @@ function updateCharacterDisplay() {
         li.textContent = item;
         inventoryList.appendChild(li);
     });
+
+    // Party members display
+    const partyDiv = document.getElementById('party-members');
+    if (char.party && char.party.length > 0) {
+        partyDiv.innerHTML = '';
+        char.party.forEach(companion => {
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'party-member';
+
+            const hpPercent = (companion.current_hp / companion.max_hp) * 100;
+
+            memberDiv.innerHTML = `
+                <div class="party-member-header">
+                    <span class="party-member-name">${companion.name}</span>
+                </div>
+                <div class="party-member-class">${companion.race} ${companion.class} (Lvl ${companion.level})</div>
+                <div class="party-member-hp">HP: ${companion.current_hp}/${companion.max_hp}</div>
+                <div class="party-hp-bar">
+                    <div class="party-hp-fill" style="width: ${hpPercent}%"></div>
+                </div>
+            `;
+            partyDiv.appendChild(memberDiv);
+        });
+    } else {
+        partyDiv.innerHTML = '<p class="empty-party">Adventuring alone</p>';
+    }
+
+    // Chapter and story progress display
+    if (char.chapter) {
+        const chapterTitles = {
+            1: 'The Call to Adventure',
+            2: 'Into the Darkness',
+            3: 'Gathering Allies',
+            4: 'The Rising Storm',
+            5: 'The Final Confrontation'
+        };
+        document.getElementById('chapter-display').textContent =
+            `Chapter ${char.chapter}: ${chapterTitles[char.chapter] || 'Unknown'}`;
+    }
+
+    if (char.story_progress !== undefined) {
+        document.getElementById('story-progress').textContent =
+            `Progress: ${char.story_progress}`;
+    }
 }
 
 function updateEnemyDisplay(enemy) {
@@ -116,16 +160,27 @@ function updateEnemyDisplay(enemy) {
     document.getElementById('enemy-hp-text').textContent = `${enemy.current_hp}/${enemy.hp}`;
 }
 
-function showDiceRoll(text) {
+function showDiceRoll(text, rollValue = 20) {
     const diceDisplay = document.getElementById('dice-display');
     const diceResult = document.getElementById('dice-result');
+    const dice3d = document.getElementById('dice-3d');
+
+    // Update dice faces to show the roll
+    const faces = dice3d.querySelectorAll('.dice-face');
+    faces[0].textContent = rollValue; // Front face shows the result
 
     diceDisplay.classList.remove('hidden');
     diceResult.textContent = text;
 
+    // Restart animation
+    dice3d.style.animation = 'none';
+    setTimeout(() => {
+        dice3d.style.animation = 'dice-spin 1s ease-out';
+    }, 10);
+
     setTimeout(() => {
         diceDisplay.classList.add('hidden');
-    }, 2000);
+    }, 3000);
 }
 
 function displayStory(text) {
@@ -229,8 +284,19 @@ function handleActionResponse(data) {
             break;
 
         case 'combat_continue':
-            // Display all combat messages
-            data.messages.forEach(msg => addActionMessage(msg));
+            // Display all combat messages with dice animation for rolls
+            data.messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    if (msg.includes('rolled') && msg.includes('🎲')) {
+                        // Extract roll value if possible
+                        const rollMatch = msg.match(/rolled (\d+)/);
+                        if (rollMatch) {
+                            showDiceRoll(msg, parseInt(rollMatch[1]));
+                        }
+                    }
+                    addActionMessage(msg);
+                }, index * 300);
+            });
             updateEnemyDisplay(data.enemy);
             displayChoices(data.choices);
             break;

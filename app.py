@@ -90,78 +90,129 @@ CLASSES = {
 }
 
 # ============================================================================
-# STORY GENERATION
+# STORY GENERATION - ENHANCED
 # ============================================================================
 class StoryGenerator:
+    # Chapter-based story progression
+    CHAPTERS = {
+        1: {
+            'title': 'The Call to Adventure',
+            'locations': ['the Village of Millhaven', 'the Old Tavern', 'the Market Square'],
+            'quest': 'Investigate the disappearances in the northern woods'
+        },
+        2: {
+            'title': 'Into the Darkness',
+            'locations': ['the Forgotten Crypt', 'Shadowfang Cavern', 'the Ruins of Thornkeep'],
+            'quest': 'Uncover the source of the evil'
+        },
+        3: {
+            'title': 'Gathering Allies',
+            'locations': ['Blackwood Forest', 'the Elven Outpost', 'the Dwarven Stronghold'],
+            'quest': 'Recruit companions for the final battle'
+        },
+        4: {
+            'title': 'The Rising Storm',
+            'locations': ['the Tower of Eternal Night', 'Dragon\'s Maw Canyon', 'the Sunken Temple'],
+            'quest': 'Confront the dark lord\'s lieutenants'
+        },
+        5: {
+            'title': 'The Final Confrontation',
+            'locations': ['Frostpeak Mountain', 'the Cursed Marshlands', 'the Dark Citadel'],
+            'quest': 'Defeat the ancient evil threatening the realm'
+        }
+    }
+
     INTRO_TEMPLATES = [
-        "You find yourself at the entrance of {location}, a place whispered about in tavern tales. The air is thick with {atmosphere}.",
-        "The road has led you to {location}. Before you stands {obstacle}, and you sense {atmosphere}.",
-        "As dawn breaks, you arrive at {location}. {atmosphere} fills the air, and danger lurks nearby.",
+        "You find yourself at the entrance of {location}, a place whispered about in tavern tales. The air is thick with {atmosphere}. {quest_hint}",
+        "The road has led you to {location}. Before you stands {obstacle}, and you sense {atmosphere}. {quest_hint}",
+        "As dawn breaks, you arrive at {location}. {atmosphere} fills the air, and danger lurks nearby. {quest_hint}",
     ]
 
-    LOCATIONS = [
-        "the Forgotten Crypt", "Shadowfang Cavern", "the Ruins of Thornkeep",
-        "Blackwood Forest", "the Tower of Eternal Night", "Dragon's Maw Canyon",
-        "the Sunken Temple", "Frostpeak Mountain", "the Cursed Marshlands"
+    QUEST_HINTS = [
+        "The locals speak of a great evil awakening",
+        "An ancient prophecy speaks of a hero like you",
+        "Dark forces gather, and only you can stop them",
+        "The fate of the realm rests on your shoulders"
     ]
 
     ATMOSPHERES = [
         "an ancient evil", "the smell of sulfur and decay", "a sense of being watched",
-        "whispers of the damned", "an unnatural silence", "a foreboding darkness"
+        "whispers of the damned", "an unnatural silence", "a foreboding darkness",
+        "the weight of destiny", "an otherworldly presence"
     ]
 
     OBSTACLES = [
         "a massive iron gate, slightly ajar", "the corpses of previous adventurers",
-        "mysterious glowing runes", "a deep chasm with a rope bridge"
+        "mysterious glowing runes", "a deep chasm with a rope bridge",
+        "a warning sign written in blood", "the remnants of a fierce battle"
     ]
 
-    EXPLORATION_SCENES = [
-        "You enter a dimly lit chamber. {detail}. What do you do?",
-        "The passage narrows. {detail}. How do you proceed?",
-        "You hear strange sounds ahead. {detail}. What's your move?",
-        "A fork in the path appears. {detail}. Which way?",
-    ]
-
-    EXPLORATION_DETAILS = [
-        "Strange markings cover the walls",
-        "You notice fresh blood on the ground",
-        "A faint glow emanates from deeper within",
-        "The bones of fallen warriors litter the floor",
-        "You smell smoke and hear distant chanting"
-    ]
+    DETAILED_EXPLORATION = {
+        'mystery': [
+            "You discover a hidden chamber filled with ancient scrolls. As you read them, you learn of a prophecy foretelling your arrival. The texts speak of trials ahead.",
+            "A mysterious figure watches from the shadows. As you approach, they vanish, leaving behind a cryptic message carved in stone.",
+            "You find a journal belonging to a previous adventurer. Their final entry warns of a terrible creature guarding the path ahead."
+        ],
+        'treasure': [
+            "Glinting in the torchlight, you spot a locked chest. The craftsmanship suggests it contains something valuable.",
+            "An ornate pedestal holds a mysterious artifact. Ancient runes glow faintly around its base.",
+            "Among the rubble, you notice the shimmer of gold and the glint of steel. Treasure awaits the brave."
+        ],
+        'danger': [
+            "Fresh claw marks rake across the stone walls. Whatever made them is massive... and nearby.",
+            "You hear the click of a pressure plate beneath your boot. Time seems to slow as you realize you've triggered a trap.",
+            "The temperature drops suddenly. Your breath mists in the air. Something unnatural is close."
+        ],
+        'npc': [
+            "A wounded warrior leans against the wall. 'Turn back,' they gasp. 'This place... it's cursed.' But their eyes show determination.",
+            "You encounter a mysterious mage studying the walls. They look up with interest. 'Seeking glory or redemption, adventurer?'",
+            "A seasoned ranger emerges from the shadows. 'Dangerous to go alone. Perhaps we could aid each other?'"
+        ]
+    }
 
     @staticmethod
-    def generate_intro():
+    def generate_intro(chapter=1):
+        chapter_data = StoryGenerator.CHAPTERS.get(chapter, StoryGenerator.CHAPTERS[1])
         template = random.choice(StoryGenerator.INTRO_TEMPLATES)
         return template.format(
-            location=random.choice(StoryGenerator.LOCATIONS),
+            location=random.choice(chapter_data['locations']),
             atmosphere=random.choice(StoryGenerator.ATMOSPHERES),
-            obstacle=random.choice(StoryGenerator.OBSTACLES)
+            obstacle=random.choice(StoryGenerator.OBSTACLES),
+            quest_hint=random.choice(StoryGenerator.QUEST_HINTS)
         )
 
     @staticmethod
-    def generate_exploration():
-        template = random.choice(StoryGenerator.EXPLORATION_SCENES)
-        return template.format(
-            detail=random.choice(StoryGenerator.EXPLORATION_DETAILS)
-        )
+    def generate_exploration(story_progress=0):
+        # Choose category based on story progress
+        if story_progress < 3:
+            category = random.choice(['mystery', 'danger', 'treasure'])
+        else:
+            category = random.choice(['mystery', 'danger', 'treasure', 'npc'])
+
+        return random.choice(StoryGenerator.DETAILED_EXPLORATION[category])
 
     @staticmethod
-    def generate_choices(scene_type='exploration'):
+    def generate_choices(scene_type='exploration', has_party=False):
         if scene_type == 'exploration':
-            return [
+            choices = [
                 "Search the area carefully for traps and treasure",
                 "Proceed cautiously, weapons ready",
                 "Light a torch and investigate the sounds",
                 "Cast a detection spell to sense magic or danger"
             ]
+            if has_party:
+                choices.append("Send a party member to scout ahead")
+            return choices
         elif scene_type == 'combat':
-            return [
+            choices = [
                 "Attack with your weapon",
                 "Cast a spell or use a special ability",
                 "Take defensive position and dodge",
                 "Attempt to intimidate or negotiate"
             ]
+            if has_party:
+                choices.append("Coordinate an attack with your party")
+            return choices
         else:
             return [
                 "Investigate further",
@@ -210,6 +261,94 @@ RARITY_COLORS = {
     'Epic': '🟣',
     'Legendary': '🟠'
 }
+
+# ============================================================================
+# PARTY MEMBERS / COMPANIONS SYSTEM
+# ============================================================================
+COMPANIONS = {
+    'Theron the Brave': {
+        'race': 'Human',
+        'class': 'Fighter',
+        'level': 2,
+        'hp': 20,
+        'ac': 16,
+        'attack_bonus': 5,
+        'damage': '1d8+3',
+        'description': 'A seasoned warrior with a noble heart and unwavering courage.',
+        'backstory': 'Once a knight of the realm, now seeking redemption for past failures.',
+        'recruitment_chance': 0.15,
+        'story_progress_required': 2
+    },
+    'Lyra Moonwhisper': {
+        'race': 'Elf',
+        'class': 'Wizard',
+        'level': 3,
+        'hp': 15,
+        'ac': 13,
+        'attack_bonus': 6,
+        'damage': '2d6+3',
+        'description': 'A mysterious elven mage with mastery over arcane forces.',
+        'backstory': 'Seeks ancient knowledge hidden in these cursed lands.',
+        'recruitment_chance': 0.12,
+        'story_progress_required': 3
+    },
+    'Grimjaw Ironfoot': {
+        'race': 'Dwarf',
+        'class': 'Cleric',
+        'level': 2,
+        'hp': 18,
+        'ac': 15,
+        'attack_bonus': 4,
+        'damage': '1d6+2',
+        'description': 'A gruff dwarven cleric who heals wounds and smites evil.',
+        'backstory': 'His temple was destroyed. He vows vengeance on the dark forces.',
+        'recruitment_chance': 0.15,
+        'story_progress_required': 2
+    },
+    'Shadow': {
+        'race': 'Halfling',
+        'class': 'Rogue',
+        'level': 2,
+        'hp': 14,
+        'ac': 14,
+        'attack_bonus': 5,
+        'damage': '1d6+3',
+        'description': 'A nimble rogue with a mysterious past and quick daggers.',
+        'backstory': 'Speaks little of their past, but their skills speak volumes.',
+        'recruitment_chance': 0.18,
+        'story_progress_required': 1
+    },
+    'Zara Stormcaller': {
+        'race': 'Dragonborn',
+        'class': 'Paladin',
+        'level': 3,
+        'hp': 25,
+        'ac': 17,
+        'attack_bonus': 6,
+        'damage': '1d10+4',
+        'description': 'A noble dragonborn paladin sworn to protect the innocent.',
+        'backstory': 'Answered a divine calling to vanquish the darkness.',
+        'recruitment_chance': 0.10,
+        'story_progress_required': 4
+    }
+}
+
+def create_companion_instance(companion_name):
+    """Create a companion instance from the template"""
+    template = COMPANIONS[companion_name].copy()
+    return {
+        'name': companion_name,
+        'race': template['race'],
+        'class': template['class'],
+        'level': template['level'],
+        'max_hp': template['hp'],
+        'current_hp': template['hp'],
+        'ac': template['ac'],
+        'attack_bonus': template['attack_bonus'],
+        'damage': template['damage'],
+        'description': template['description'],
+        'backstory': template['backstory']
+    }
 
 def calculate_total_stats(character):
     """Calculate total stats including equipment bonuses"""
@@ -367,7 +506,10 @@ def create_character():
             'armor': starting_armor,
             'accessory': None
         },
-        'equipment_inventory': []
+        'equipment_inventory': [],
+        'party': [],  # List of companion instances
+        'story_progress': 0,  # Track story advancement
+        'chapter': 1  # Current chapter
     }
 
     # Calculate AC with starting armor
@@ -385,7 +527,7 @@ def create_character():
     return jsonify({
         'success': True,
         'character': character,
-        'intro': StoryGenerator.generate_intro()
+        'intro': StoryGenerator.generate_intro(chapter=1)
     })
 
 @app.route('/api/game_state', methods=['GET'])
@@ -441,20 +583,49 @@ def perform_action():
         return jsonify(result)
     else:
         # Continue exploration
-        story = StoryGenerator.generate_exploration()
-        choices = StoryGenerator.generate_choices('exploration')
+        story_progress = character.get('story_progress', 0)
+        character['story_progress'] = story_progress + 1
+
+        story = StoryGenerator.generate_exploration(story_progress)
+        has_party = len(character.get('party', [])) > 0
+        choices = StoryGenerator.generate_choices('exploration', has_party)
+
+        # Companion recruitment chance
+        companion_recruited = None
+        if story_progress >= 2 and len(character.get('party', [])) < 4:
+            for comp_name, comp_data in COMPANIONS.items():
+                # Check if already recruited
+                if any(p['name'] == comp_name for p in character.get('party', [])):
+                    continue
+
+                # Check story progress requirement
+                if story_progress >= comp_data['story_progress_required']:
+                    if random.random() < comp_data['recruitment_chance']:
+                        companion = create_companion_instance(comp_name)
+                        character['party'].append(companion)
+                        companion_recruited = companion
+                        story += f"\n\n🤝 {comp_name} joins your party!\n\"{comp_data['backstory']}\""
+                        break
 
         # Random loot
         if random.random() < 0.3:
             gold_found = random.randint(5, 25)
             character['gold'] += gold_found
             story += f"\n\n💰 You found {gold_found} gold pieces!"
-            session['character'] = character
+
+        # Chapter progression
+        if character['story_progress'] % 10 == 0 and character['chapter'] < 5:
+            character['chapter'] += 1
+            chapter_data = StoryGenerator.CHAPTERS[character['chapter']]
+            story += f"\n\n📖 CHAPTER {character['chapter']}: {chapter_data['title']}\n{chapter_data['quest']}"
+
+        session['character'] = character
 
         return jsonify({
             'result': 'exploration',
             'message': story,
-            'choices': choices
+            'choices': choices,
+            'companion_recruited': companion_recruited
         })
 
 def handle_combat(choice, character, game_state):
@@ -538,31 +709,112 @@ def handle_combat(choice, character, game_state):
             'choices': StoryGenerator.generate_choices('exploration')
         }
 
-    # Enemy attack
-    enemy_attack_roll = Dice.d20(enemy['attack'])
-    messages.append(f"🎲 {enemy_name} rolled {enemy_attack_roll['chosen']} + {enemy['attack']} = {enemy_attack_roll['total']} to attack")
+    # Party members attack
+    party = character.get('party', [])
+    for companion in party:
+        if companion['current_hp'] > 0 and enemy_hp > 0:
+            comp_attack_roll = Dice.d20(companion['attack_bonus'])
+            messages.append(f"🎲 {companion['name']} rolled {comp_attack_roll['chosen']} + {companion['attack_bonus']} = {comp_attack_roll['total']} to attack")
 
-    if enemy_attack_roll['total'] >= character['ac']:
+            if comp_attack_roll['chosen'] == 20:
+                # Critical hit
+                damage_dice = companion['damage'].split('d')
+                dice_count = int(damage_dice[0]) * 2
+                dice_sides = int(damage_dice[1].split('+')[0]) if '+' in damage_dice[1] else int(damage_dice[1])
+                damage_bonus = int(damage_dice[1].split('+')[1]) if '+' in damage_dice[1] else 0
+                damage_roll = Dice.roll(dice_sides, dice_count, damage_bonus)
+                enemy_hp -= damage_roll['total']
+                messages.append(f"⚔️ CRITICAL HIT! {companion['name']} deals {damage_roll['total']} damage!")
+            elif comp_attack_roll['total'] >= enemy['ac']:
+                damage_dice = companion['damage'].split('d')
+                dice_count = int(damage_dice[0])
+                dice_sides = int(damage_dice[1].split('+')[0]) if '+' in damage_dice[1] else int(damage_dice[1])
+                damage_bonus = int(damage_dice[1].split('+')[1]) if '+' in damage_dice[1] else 0
+                damage_roll = Dice.roll(dice_sides, dice_count, damage_bonus)
+                enemy_hp -= damage_roll['total']
+                messages.append(f"⚔️ {companion['name']} hits for {damage_roll['total']} damage!")
+            else:
+                messages.append(f"❌ {companion['name']}'s attack misses!")
+
+    # Check if enemy defeated after party attacks
+    if enemy_hp <= 0:
+        xp_gained = enemy['xp']
+        gold_gained = random.randint(10, 50)
+        character['xp'] += xp_gained
+        character['gold'] += gold_gained
+
+        messages.append(f"🏆 Victory! The {enemy_name} is defeated!")
+        messages.append(f"📈 You gained {xp_gained} XP and {gold_gained} gold!")
+
+        # Generate loot
+        loot_tier = enemy.get('loot_tier', 'common')
+        loot = generate_loot(loot_tier, character['level'])
+
+        if loot:
+            for item in loot:
+                character['equipment_inventory'].append({
+                    'type': item['type'],
+                    'name': item['name']
+                })
+                rarity_icon = RARITY_COLORS.get(item['stats']['rarity'], '⚪')
+                messages.append(f"✨ Found: {rarity_icon} {item['name']} ({item['stats']['rarity']} {item['type']})")
+
+        # Check for level up
+        xp_needed = character['level'] * 1000
+        if character['xp'] >= xp_needed:
+            character['level'] += 1
+            hp_gain = random.randint(1, CLASSES[character['class']]['hit_die']) + character['modifiers']['con']
+            character['max_hp'] += hp_gain
+            character['current_hp'] = character['max_hp']
+            messages.append(f"🎉 LEVEL UP! You are now level {character['level']}! Max HP increased by {hp_gain}!")
+
+        game_state['combat_active'] = False
+        game_state['enemy'] = None
+
+        has_party = len(character.get('party', [])) > 0
+        return {
+            'result': 'combat_victory',
+            'messages': messages,
+            'character': character,
+            'loot': loot if loot else [],
+            'choices': StoryGenerator.generate_choices('exploration', has_party)
+        }
+
+    # Enemy attack (targets random party member or player)
+    party_alive = [character] + [c for c in party if c['current_hp'] > 0]
+    target = random.choice(party_alive)
+    is_player = target == character
+
+    enemy_attack_roll = Dice.d20(enemy['attack'])
+    target_name = "you" if is_player else target['name']
+    messages.append(f"🎲 {enemy_name} attacks {target_name}, rolled {enemy_attack_roll['chosen']} + {enemy['attack']} = {enemy_attack_roll['total']}")
+
+    target_ac = target['ac'] if not is_player else character['ac']
+    if enemy_attack_roll['total'] >= target_ac:
         damage_dice = enemy['damage'].split('d')
         dice_count = int(damage_dice[0])
         dice_sides = int(damage_dice[1].split('+')[0])
         damage_bonus = int(damage_dice[1].split('+')[1]) if '+' in damage_dice[1] else 0
         damage_roll = Dice.roll(dice_sides, dice_count, damage_bonus)
-        character['current_hp'] -= damage_roll['total']
-        messages.append(f"💥 {enemy_name} hits you for {damage_roll['total']} damage!")
+        target['current_hp'] -= damage_roll['total']
+        messages.append(f"💥 {enemy_name} hits {target_name} for {damage_roll['total']} damage!")
 
-        if character['current_hp'] <= 0:
+        if is_player and character['current_hp'] <= 0:
             character['current_hp'] = 0
             return {
                 'result': 'defeat',
                 'messages': messages + ["💀 You have been defeated..."],
                 'character': character
             }
+        elif not is_player and target['current_hp'] <= 0:
+            target['current_hp'] = 0
+            messages.append(f"💀 {target['name']} has fallen in battle!")
     else:
-        messages.append(f"🛡️ {enemy_name}'s attack misses!")
+        messages.append(f"🛡️ {enemy_name}'s attack on {target_name} misses!")
 
     game_state['enemy_current_hp'] = enemy_hp
 
+    has_party = len(character.get('party', [])) > 0
     return {
         'result': 'combat_continue',
         'messages': messages,
@@ -573,7 +825,7 @@ def handle_combat(choice, character, game_state):
             'current_hp': enemy_hp,
             'ac': enemy['ac']
         },
-        'choices': StoryGenerator.generate_choices('combat')
+        'choices': StoryGenerator.generate_choices('combat', has_party)
     }
 
 @app.route('/api/rest', methods=['POST'])

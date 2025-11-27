@@ -142,6 +142,19 @@
                     </div>
 
                     <div class="stat-block">
+                        <h4>🤝 Party Members</h4>
+                        <div id="party-members" class="party-list">
+                            <p class="empty-party">Adventuring alone</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>📖 Quest</h4>
+                        <p id="chapter-display" class="chapter-info">Chapter 1: The Call to Adventure</p>
+                        <p id="story-progress" class="story-progress">Progress: 0</p>
+                    </div>
+
+                    <div class="stat-block">
                         <h4>📦 Items</h4>
                         <ul id="inventory-list">
                             <li>Adventurer's Pack</li>
@@ -173,10 +186,19 @@
                         </div>
                     </div>
 
-                    <!-- Dice Roll Display -->
+                    <!-- 3D Dice Roll Display -->
                     <div id="dice-display" class="dice-display hidden">
-                        <div class="dice-animation">🎲</div>
-                        <p id="dice-result"></p>
+                        <div class="dice-3d-container">
+                            <div class="dice-3d" id="dice-3d">
+                                <div class="dice-face dice-front">1</div>
+                                <div class="dice-face dice-back">6</div>
+                                <div class="dice-face dice-right">3</div>
+                                <div class="dice-face dice-left">4</div>
+                                <div class="dice-face dice-top">5</div>
+                                <div class="dice-face dice-bottom">2</div>
+                            </div>
+                        </div>
+                        <p id="dice-result" class="dice-result-text"></p>
                     </div>
 
                     <!-- Action Log -->
