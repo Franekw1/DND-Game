@@ -263,3 +263,18 @@ kbd {
 body.pointer-locked {
     cursor: none;
 }
+
+/* Start Button */
+#start-button {
+    transition: all 0.3s ease;
+}
+
+#start-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+    background: linear-gradient(135deg, #D2691E 0%, #8B4513 100%);
+}
+
+#start-button:active {
+    transform: scale(0.95);
+}

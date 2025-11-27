@@ -6,7 +6,7 @@
     <title>3D DND Dungeon Crawler</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Load Three.js from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
     <!-- Game HUD -->
@@ -57,7 +57,10 @@
         <div class="loading-content">
             <h1>🐉 3D DND Dungeon Crawler</h1>
             <div class="loading-spinner"></div>
-            <p>Preparing your adventure...</p>
+            <p id="loading-text">Preparing your adventure...</p>
+            <button id="start-button" style="display:none; padding: 15px 40px; font-size: 24px; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); color: #FFD700; border: 3px solid #FFD700; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);">
+                ⚔️ START GAME ⚔️
+            </button>
             <p class="loading-tip">Tip: Collect gold from chests and defeat enemies!</p>
         </div>
     </div>
@@ -66,14 +69,35 @@
     <script src="{{ url_for('static', filename='js/game.js') }}"></script>
 
     <script>
-        // Hide loading screen after page loads
+        // Check if THREE.js is loaded and show start button
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loading-screen').style.opacity = '0';
+            const loadingText = document.getElementById('loading-text');
+            const startButton = document.getElementById('start-button');
+            const loadingScreen = document.getElementById('loading-screen');
+            const spinner = document.querySelector('.loading-spinner');
+
+            // Check if THREE is available
+            if (typeof THREE !== 'undefined') {
+                // THREE.js loaded successfully
                 setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                }, 500);
-            }, 2000);
+                    spinner.style.display = 'none';
+                    loadingText.textContent = 'Ready to play!';
+                    startButton.style.display = 'block';
+
+                    // Start button click handler
+                    startButton.addEventListener('click', () => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                        }, 500);
+                    });
+                }, 1000);
+            } else {
+                // THREE.js failed to load
+                spinner.style.display = 'none';
+                loadingText.textContent = 'Error loading game. Please refresh the page.';
+                loadingText.style.color = '#ff0000';
+            }
         });
     </script>
 </body>
