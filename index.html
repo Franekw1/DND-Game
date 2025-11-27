@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D DND Dungeon Crawler</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Game HUD -->
+    <div id="hud">
+        <div class="hud-panel top-left">
+            <h2>⚔️ DND Dungeon</h2>
+            <div class="stat-row">
+                <span class="stat-label">❤️ Health:</span>
+                <div class="health-container">
+                    <div id="health-bar" class="health-bar"></div>
+                    <span id="health" class="stat-value">100</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">⭐ Score:</span>
+                <span id="score" class="stat-value">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">💰 Gold:</span>
+                <span id="gold" class="stat-value">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">💀 Kills:</span>
+                <span id="kills" class="stat-value">0</span>
+            </div>
+        </div>
+
+        <div class="hud-panel bottom-center">
+            <div class="controls-hint">
+                <strong>Controls:</strong><br>
+                <kbd>W A S D</kbd> - Move<br>
+                <kbd>Mouse</kbd> - Look Around<br>
+                <kbd>E</kbd> - Interact with Chests<br>
+                <kbd>Space</kbd> - Attack Enemies<br>
+                <em>Click to start!</em>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crosshair -->
+    <div id="crosshair">
+        <div class="crosshair-line horizontal"></div>
+        <div class="crosshair-line vertical"></div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>🐉 3D DND Dungeon Crawler</h1>
+            <div class="loading-spinner"></div>
+            <p>Preparing your adventure...</p>
+            <p class="loading-tip">Tip: Collect gold from chests and defeat enemies!</p>
+        </div>
+    </div>
+
+    <script type="module" src="game.js"></script>
+
+    <script>
+        // Hide loading screen after page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

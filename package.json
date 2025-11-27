@@ -1,0 +1,19 @@
+{
+  "name": "dnd-3d-game",
+  "version": "1.0.0",
+  "description": "3D Dungeons & Dragons AI Game",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080",
+    "dev": "npx http-server -p 8080 -c-1"
+  },
+  "keywords": ["dnd", "3d", "game", "threejs", "dungeon"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
