@@ -8,7 +8,7 @@ const gameState = {
 
 // Initialize Three.js scene
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x000000, 1, 50);
+scene.fog = new THREE.Fog(0x1a1a1a, 10, 60);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -30,13 +30,19 @@ const player = {
 camera.position.copy(player.position);
 camera.position.y = player.height;
 
-// Lighting
-const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+// Lighting - Much Brighter!
+const ambientLight = new THREE.AmbientLight(0x666666, 1.2);
 scene.add(ambientLight);
+
+// Add directional light for overall brightness
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+directionalLight.position.set(5, 10, 5);
+directionalLight.castShadow = true;
+scene.add(directionalLight);
 
 // Create torch lights in dungeon
 function createTorch(x, z) {
-    const torchLight = new THREE.PointLight(0xff6600, 1.5, 20);
+    const torchLight = new THREE.PointLight(0xff8833, 3.5, 30);
     torchLight.position.set(x, 2, z);
     torchLight.castShadow = true;
     scene.add(torchLight);
@@ -72,7 +78,7 @@ scene.add(floor);
 
 // Create ceiling
 const ceilingGeometry = new THREE.PlaneGeometry(50, 50);
-const ceilingMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
+const ceilingMaterial = new THREE.MeshStandardMaterial({ color: 0x3a3a3a });
 const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
 ceiling.rotation.x = Math.PI / 2;
 ceiling.position.y = 5;
@@ -82,7 +88,7 @@ scene.add(ceiling);
 // Create dungeon walls
 function createWall(x, y, z, width, height, depth, rotation = 0) {
     const geometry = new THREE.BoxGeometry(width, height, depth);
-    const material = new THREE.MeshStandardMaterial({ color: 0x4a4a4a });
+    const material = new THREE.MeshStandardMaterial({ color: 0x6a6a6a });
     const wall = new THREE.Mesh(geometry, material);
     wall.position.set(x, y, z);
     wall.rotation.y = rotation;
