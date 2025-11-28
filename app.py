@@ -8,8 +8,7 @@ from flask import Flask, render_template, request, jsonify, session
 from flask_session import Session
 import secrets
 import random
-from dataclasses import dataclass, asdict
-from typing import List, Dict, Optional
+from typing import Dict
 from datetime import datetime
 
 app = Flask(__name__)
@@ -20,6 +19,8 @@ Session(app)
 # ============================================================================
 # DICE ROLLING SYSTEM
 # ============================================================================
+
+
 class Dice:
     @staticmethod
     def roll(sides: int, count: int = 1, modifier: int = 0) -> Dict:
@@ -64,9 +65,12 @@ class Dice:
                 'type': 'normal'
             }
 
+
 # ============================================================================
 # GAME DATA
 # ============================================================================
+
+
 RACES = {
     'Human': {'str': 1, 'dex': 1, 'con': 1, 'int': 1, 'wis': 1, 'cha': 1},
     'Elf': {'dex': 2, 'int': 1},
@@ -92,6 +96,8 @@ CLASSES = {
 # ============================================================================
 # SPELL SYSTEM
 # ============================================================================
+
+
 SPELLS = {
     'Wizard': {
         'Magic Missile': {'level': 1, 'damage': '3d4+3', 'mana_cost': 2, 'description': 'Auto-hit arcane missiles', 'type': 'damage'},
@@ -126,6 +132,8 @@ SPELLS = {
 # ============================================================================
 # STATUS EFFECTS
 # ============================================================================
+
+
 STATUS_EFFECTS = {
     'Poisoned': {'attack_penalty': -2, 'damage_per_turn': 5, 'description': 'Taking poison damage'},
     'Blessed': {'attack_bonus': 1, 'save_bonus': 1, 'description': 'Divine blessing'},
@@ -139,6 +147,8 @@ STATUS_EFFECTS = {
 # ============================================================================
 # SKILLS SYSTEM
 # ============================================================================
+
+
 SKILLS = {
     'Persuasion': 'cha',
     'Intimidation': 'cha',
@@ -159,6 +169,8 @@ SKILLS = {
 # ============================================================================
 # BOSS BATTLES
 # ============================================================================
+
+
 BOSSES = {
     'Shadow Lord': {
         'hp': 150,
@@ -198,6 +210,8 @@ BOSSES = {
 # ============================================================================
 # STORY GENERATION - ENHANCED
 # ============================================================================
+
+
 class StoryGenerator:
     # Chapter-based story progression
     CHAPTERS = {
@@ -327,9 +341,12 @@ class StoryGenerator:
                 "Look for another path"
             ]
 
+
 # ============================================================================
 # EQUIPMENT SYSTEM
 # ============================================================================
+
+
 EQUIPMENT = {
     'weapons': {
         'Rusty Dagger': {'rarity': 'Common', 'damage': '1d4', 'attack_bonus': 0, 'price': 10, 'level': 1},
@@ -371,6 +388,8 @@ RARITY_COLORS = {
 # ============================================================================
 # PARTY MEMBERS / COMPANIONS SYSTEM
 # ============================================================================
+
+
 COMPANIONS = {
     'Theron the Brave': {
         'race': 'Human',
@@ -439,6 +458,7 @@ COMPANIONS = {
     }
 }
 
+
 def create_companion_instance(companion_name):
     """Create a companion instance from the template"""
     template = COMPANIONS[companion_name].copy()
@@ -456,6 +476,7 @@ def create_companion_instance(companion_name):
         'backstory': template['backstory']
     }
 
+
 def calculate_total_stats(character):
     """Calculate total stats including equipment bonuses"""
     total_stats = character['stats'].copy()
@@ -471,6 +492,7 @@ def calculate_total_stats(character):
 
     return total_stats
 
+
 def calculate_ac(character):
     """Calculate AC including equipment bonuses"""
     base_ac = 10 + character['modifiers']['dex']
@@ -483,6 +505,7 @@ def calculate_ac(character):
             base_ac += armor.get('ac_bonus', 0)
 
     return base_ac
+
 
 def calculate_attack_damage(character):
     """Calculate attack bonus and damage from equipped weapon"""
@@ -498,9 +521,12 @@ def calculate_attack_damage(character):
 
     return attack_bonus, damage
 
+
 # ============================================================================
 # ENEMY SYSTEM
 # ============================================================================
+
+
 ENEMIES = {
     'Goblin': {'hp': 15, 'ac': 13, 'attack': 4, 'damage': '1d6+2', 'xp': 50, 'loot_tier': 'common'},
     'Orc Warrior': {'hp': 30, 'ac': 14, 'attack': 5, 'damage': '1d8+3', 'xp': 100, 'loot_tier': 'common'},
@@ -512,6 +538,7 @@ ENEMIES = {
     'Troll': {'hp': 84, 'ac': 15, 'attack': 7, 'damage': '2d6+4', 'xp': 1800, 'loot_tier': 'rare'},
     'Dragon Wyrmling': {'hp': 75, 'ac': 17, 'attack': 7, 'damage': '2d10+4', 'xp': 2300, 'loot_tier': 'epic'}
 }
+
 
 def generate_loot(loot_tier, character_level):
     """Generate random equipment loot based on tier"""
@@ -529,19 +556,23 @@ def generate_loot(loot_tier, character_level):
         if random.random() < chance:
             # Get equipment of appropriate level
             available = [name for name, stats in EQUIPMENT[equip_type].items()
-                        if stats['level'] <= character_level + 1]
+                         if stats['level'] <= character_level + 1]
             if available:
                 item = random.choice(available)
                 loot.append({'type': equip_type, 'name': item, 'stats': EQUIPMENT[equip_type][item]})
 
     return loot
 
+
 # ============================================================================
 # FLASK ROUTES
 # ============================================================================
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/api/create_character', methods=['POST'])
 def create_character():
@@ -650,6 +681,7 @@ def create_character():
         'intro': StoryGenerator.generate_intro(chapter=1)
     })
 
+
 @app.route('/api/game_state', methods=['GET'])
 def get_game_state():
     character = session.get('character', {})
@@ -658,6 +690,7 @@ def get_game_state():
         'character': character,
         'game_state': game_state
     })
+
 
 @app.route('/api/action', methods=['POST'])
 def perform_action():
@@ -748,6 +781,7 @@ def perform_action():
             'companion_recruited': companion_recruited
         })
 
+
 def handle_combat(choice, character, game_state):
     enemy_name = game_state['enemy_name']
     enemy = game_state['enemy']
@@ -779,12 +813,12 @@ def handle_combat(choice, character, game_state):
         # Hit - use weapon damage
         damage_dice = weapon_damage.split('d')
         dice_count = int(damage_dice[0])
-        dice_sides = int(damage_dice[1].split('+')[0]) if '+' not in damage_dice[1] else int(damage_dice[1])
+        dice_sides = int(damage_dice[1].split('+')[0]) if '+' in damage_dice[1] else int(damage_dice[1])
         damage_roll = Dice.roll(dice_sides, dice_count, attack_mod)
         enemy_hp -= damage_roll['total']
         messages.append(f"⚔️ Hit! You deal {damage_roll['total']} damage!")
     else:
-        messages.append(f"❌ Miss! Your attack fails to connect.")
+        messages.append("❌ Miss! Your attack fails to connect.")
 
     # Check if enemy defeated
     if enemy_hp <= 0:
@@ -948,6 +982,7 @@ def handle_combat(choice, character, game_state):
         'choices': StoryGenerator.generate_choices('combat', has_party)
     }
 
+
 @app.route('/api/rest', methods=['POST'])
 def short_rest():
     character = session.get('character')
@@ -967,6 +1002,7 @@ def short_rest():
         'message': f"You rest and recover {heal_amount} HP",
         'character': character
     })
+
 
 @app.route('/api/shop', methods=['GET'])
 def get_shop():
@@ -996,6 +1032,7 @@ def get_shop():
         'shop': shop_inventory,
         'gold': character['gold']
     })
+
 
 @app.route('/api/buy', methods=['POST'])
 def buy_item():
@@ -1031,6 +1068,7 @@ def buy_item():
         'message': f"Purchased {item_name} for {price} gold",
         'character': character
     })
+
 
 @app.route('/api/equip', methods=['POST'])
 def equip_item():
@@ -1073,8 +1111,10 @@ def equip_item():
 
     # Recalculate modifiers with accessory bonuses
     total_stats = calculate_total_stats(character)
+
     def calc_modifier(score):
         return (score - 10) // 2
+
     character['modifiers'] = {stat: calc_modifier(score) for stat, score in total_stats.items()}
 
     session['character'] = character
@@ -1084,6 +1124,7 @@ def equip_item():
         'message': f"Equipped {item_name}",
         'character': character
     })
+
 
 @app.route('/api/sell', methods=['POST'])
 def sell_item():
@@ -1124,6 +1165,7 @@ def sell_item():
         })
 
     return jsonify({'error': 'Item not found'}), 404
+
 
 @app.route('/api/cast_spell', methods=['POST'])
 def cast_spell():
@@ -1199,6 +1241,7 @@ def cast_spell():
         **result
     })
 
+
 @app.route('/api/skill_check', methods=['POST'])
 def skill_check():
     """Perform a skill check"""
@@ -1228,6 +1271,7 @@ def skill_check():
         'message': f"🎲 {skill} check: {roll['chosen']} + {modifier} = {roll['total']} vs DC {dc} - {result_text}"
     })
 
+
 @app.route('/api/save_game', methods=['POST'])
 def save_game():
     """Save game state"""
@@ -1250,6 +1294,7 @@ def save_game():
         'message': 'Game saved! Copy this data to load later.'
     })
 
+
 @app.route('/api/load_game', methods=['POST'])
 def load_game():
     """Load game state"""
@@ -1267,6 +1312,7 @@ def load_game():
         'character': save_data['character'],
         'message': 'Game loaded successfully!'
     })
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
