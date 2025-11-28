@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 5e Adventure - Standalone</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .game-area {
+            background: rgba(26, 26, 46, 0.8);
+            border: 3px solid #d4af37;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .character-creation, .game-screen { display: none; }
+        .character-creation.active, .game-screen.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            color: #d4af37;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d4af37;
+            background: rgba(255,255,255,0.1);
+            color: #e4e4e4;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #d4af37;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        button:hover { background: #ffd700; transform: translateY(-2px); }
+        .story-box {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #d4af37;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-label { color: #d4af37; font-size: 12px; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        .message {
+            background: rgba(212, 175, 55, 0.2);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #d4af37;
+        }
+        .hp-bar {
+            background: rgba(0,0,0,0.3);
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .hp-fill {
+            background: linear-gradient(90deg, #dc143c, #ff6347);
+            height: 100%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ D&D 5e Adventure ⚔️</h1>
+
+        <!-- Character Creation -->
+        <div class="character-creation active">
+            <div class="game-area">
+                <h2>Create Your Hero</h2>
+                <div class="form-group">
+                    <label>Character Name:</label>
+                    <input type="text" id="char-name" placeholder="Enter your hero's name">
+                </div>
+                <div class="form-group">
+                    <label>Race:</label>
+                    <select id="char-race">
+                        <option value="Human">Human</option>
+                        <option value="Elf">Elf</option>
+                        <option value="Dwarf">Dwarf</option>
+                        <option value="Halfling">Halfling</option>
+                        <option value="Half-Orc">Half-Orc</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Class:</label>
+                    <select id="char-class">
+                        <option value="Fighter">Fighter</option>
+                        <option value="Wizard">Wizard</option>
+                        <option value="Rogue">Rogue</option>
+                        <option value="Cleric">Cleric</option>
+                    </select>
+                </div>
+                <button onclick="createCharacter()">Begin Adventure</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen">
+            <div class="game-area">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">HP</div>
+                        <div class="stat-value" id="hp-display">0/0</div>
+                        <div class="hp-bar">
+                            <div class="hp-fill" id="hp-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Level</div>
+                        <div class="stat-value" id="level-display">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">XP</div>
+                        <div class="stat-value" id="xp-display">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Gold</div>
+                        <div class="stat-value" id="gold-display">0</div>
+                    </div>
+                </div>
+
+                <div class="story-box" id="story-text"></div>
+
+                <div id="messages"></div>
+
+                <div id="choices"></div>
+
+                <button onclick="rest()">🏕️ Rest</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let character = null;
+        let gameState = { inCombat: false, enemy: null };
+
+        const RACES = {
+            'Human': {str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1},
+            'Elf': {dex: 2, int: 1},
+            'Dwarf': {con: 2, wis: 1},
+            'Halfling': {dex: 2, cha: 1},
+            'Half-Orc': {str: 2, con: 1}
+        };
+
+        const CLASSES = {
+            'Fighter': {hitDie: 10, primary: 'str'},
+            'Wizard': {hitDie: 6, primary: 'int'},
+            'Rogue': {hitDie: 8, primary: 'dex'},
+            'Cleric': {hitDie: 8, primary: 'wis'}
+        };
+
+        const ENEMIES = [
+            {name: 'Goblin', hp: 15, ac: 13, attack: 4, damage: 6, xp: 50, gold: 15},
+            {name: 'Orc', hp: 30, ac: 14, attack: 5, damage: 8, xp: 100, gold: 25},
+            {name: 'Skeleton', hp: 13, ac: 13, attack: 4, damage: 6, xp: 50, gold: 10}
+        ];
+
+        function rollDice(sides) {
+            return Math.floor(Math.random() * sides) + 1;
+        }
+
+        function rollStats() {
+            const rolls = [];
+            for (let i = 0; i < 4; i++) rolls.push(rollDice(6));
+            rolls.sort((a, b) => a - b);
+            return rolls.slice(1).reduce((a, b) => a + b, 0);
+        }
+
+        function createCharacter() {
+            const name = document.getElementById('char-name').value;
+            const race = document.getElementById('char-race').value;
+            const charClass = document.getElementById('char-class').value;
+
+            if (!name) { alert('Please enter a name'); return; }
+
+            const stats = {
+                str: rollStats(), dex: rollStats(), con: rollStats(),
+                int: rollStats(), wis: rollStats(), cha: rollStats()
+            };
+
+            const racialBonuses = RACES[race];
+            for (let stat in racialBonuses) {
+                stats[stat] = (stats[stat] || 10) + racialBonuses[stat];
+            }
+
+            const modifiers = {};
+            for (let stat in stats) {
+                modifiers[stat] = Math.floor((stats[stat] - 10) / 2);
+            }
+
+            const classInfo = CLASSES[charClass];
+            const maxHp = classInfo.hitDie + modifiers.con;
+
+            character = {
+                name, race, class: charClass, level: 1, xp: 0,
+                stats, modifiers, maxHp, currentHp: maxHp,
+                gold: 100, ac: 10 + modifiers.dex
+            };
+
+            document.querySelector('.character-creation').classList.remove('active');
+            document.querySelector('.game-screen').classList.add('active');
+
+            updateDisplay();
+            showStory("You find yourself at the entrance of a dark dungeon. The air is thick with danger. What will you do?");
+            showChoices([
+                "Proceed cautiously into the dungeon",
+                "Search for treasure",
+                "Look for enemies to fight"
+            ]);
+        }
+
+        function updateDisplay() {
+            document.getElementById('hp-display').textContent = `${character.currentHp}/${character.maxHp}`;
+            document.getElementById('level-display').textContent = character.level;
+            document.getElementById('xp-display').textContent = character.xp;
+            document.getElementById('gold-display').textContent = character.gold;
+
+            const hpPercent = (character.currentHp / character.maxHp) * 100;
+            document.getElementById('hp-bar').style.width = hpPercent + '%';
+        }
+
+        function showStory(text) {
+            document.getElementById('story-text').innerHTML = `<p>${text}</p>`;
+        }
+
+        function showChoices(choices) {
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+            choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.textContent = choice;
+                btn.onclick = () => handleAction(choice);
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function addMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'message';
+            msg.textContent = text;
+            document.getElementById('messages').appendChild(msg);
+        }
+
+        function handleAction(action) {
+            document.getElementById('messages').innerHTML = '';
+
+            if (Math.random() < 0.5) {
+                startCombat();
+            } else {
+                const gold = rollDice(20);
+                character.gold += gold;
+                updateDisplay();
+                showStory("You explore deeper into the dungeon...");
+                addMessage(`💰 You found ${gold} gold!`);
+                showChoices([
+                    "Continue exploring",
+                    "Search for more treasure",
+                    "Prepare for combat"
+                ]);
+            }
+        }
+
+        function startCombat() {
+            const enemy = {...ENEMIES[Math.floor(Math.random() * ENEMIES.length)]};
+            gameState.enemy = enemy;
+            gameState.inCombat = true;
+
+            showStory(`⚔️ A wild ${enemy.name} appears! HP: ${enemy.hp}, AC: ${enemy.ac}`);
+            showChoices(['Attack', 'Defend']);
+        }
+
+        function handleCombat(action) {
+            const enemy = gameState.enemy;
+            document.getElementById('messages').innerHTML = '';
+
+            // Player attack
+            const attackRoll = rollDice(20) + character.modifiers[CLASSES[character.class].primary];
+            addMessage(`🎲 You rolled ${attackRoll} to attack`);
+
+            if (attackRoll >= enemy.ac) {
+                const damage = rollDice(8) + character.modifiers.str;
+                enemy.hp -= damage;
+                addMessage(`⚔️ Hit! You deal ${damage} damage!`);
+            } else {
+                addMessage(`❌ Miss!`);
+            }
+
+            if (enemy.hp <= 0) {
+                character.xp += enemy.xp;
+                character.gold += enemy.gold;
+                gameState.inCombat = false;
+
+                addMessage(`🏆 Victory! Gained ${enemy.xp} XP and ${enemy.gold} gold!`);
+
+                if (character.xp >= character.level * 1000) {
+                    character.level++;
+                    character.maxHp += rollDice(CLASSES[character.class].hitDie);
+                    character.currentHp = character.maxHp;
+                    addMessage(`🎉 LEVEL UP! Now level ${character.level}!`);
+                }
+
+                updateDisplay();
+                showStory("The enemy is defeated. You continue your adventure...");
+                showChoices(["Continue exploring", "Search the area"]);
+                return;
+            }
+
+            // Enemy attack
+            const enemyAttack = rollDice(20) + enemy.attack;
+            addMessage(`🎲 ${enemy.name} rolled ${enemyAttack} to attack`);
+
+            if (enemyAttack >= character.ac) {
+                const damage = rollDice(enemy.damage);
+                character.currentHp -= damage;
+                addMessage(`💥 ${enemy.name} hits you for ${damage} damage!`);
+
+                if (character.currentHp <= 0) {
+                    character.currentHp = 0;
+                    updateDisplay();
+                    showStory("💀 You have been defeated... Your adventure ends here.");
+                    document.getElementById('choices').innerHTML = '<button onclick="location.reload()">Start Over</button>';
+                    return;
+                }
+            } else {
+                addMessage(`🛡️ ${enemy.name} misses!`);
+            }
+
+            updateDisplay();
+            showStory(`${enemy.name} HP: ${enemy.hp}/${ENEMIES.find(e => e.name === enemy.name).hp}`);
+        }
+
+        function rest() {
+            const healAmount = Math.min(rollDice(CLASSES[character.class].hitDie),
+                                       character.maxHp - character.currentHp);
+            character.currentHp += healAmount;
+            updateDisplay();
+            addMessage(`🏕️ You rest and recover ${healAmount} HP`);
+        }
+
+        // Override showChoices for combat
+        const originalShowChoices = showChoices;
+        showChoices = function(choices) {
+            if (gameState.inCombat) {
+                const choicesDiv = document.getElementById('choices');
+                choicesDiv.innerHTML = '';
+                choices.forEach(choice => {
+                    const btn = document.createElement('button');
+                    btn.textContent = choice;
+                    btn.onclick = () => handleCombat(choice);
+                    choicesDiv.appendChild(btn);
+                });
+            } else {
+                originalShowChoices(choices);
+            }
+        };
+    </script>
+</body>
+</html>
